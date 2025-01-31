@@ -1,0 +1,31 @@
+# Use official Python slim image
+FROM python:3.10-slim
+
+# Set container working directory
+WORKDIR /usr/src/app
+
+# Install system dependencies required for build
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Poetry
+RUN pip install --no-cache-dir poetry
+
+# Configure Poetry to use system Python (disable virtualenvs)
+RUN poetry config virtualenvs.create false
+
+# Copy dependency specifications first for caching
+COPY pyproject.toml poetry.lock ./
+
+# Install project dependencies
+RUN poetry install --no-root --no-interaction --no-ansi
+ENV PYTHONPATH=/usr/src/app
+# Copy application source code
+COPY . .
+
+# Expose application port
+EXPOSE 5000
+
+# Run application
+CMD ["python", "run.py"]
