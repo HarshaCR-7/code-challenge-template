@@ -1,0 +1,30 @@
+EC2 Flask App Deployment Plan
+
+Spin Up the EC2 Instance:
+First, I’ll create an EC2 instance with Docker already installed. I’ll pick an appropriate instance type and set up SSH access so I can get into it easily.
+
+Get the Flask App to EC2:
+
+Option 1: I’ll SCP the app files, including the Dockerfile, over to the EC2 instance.
+Option 2: If I’ve already pushed the Docker image to Docker Hub (or ECR), I’ll just pull it onto the EC2 instance.
+Build the Docker Image (If I’m Transferring Files):
+If I’m using files, I’ll SSH into the EC2 instance, navigate to the folder where the Dockerfile is, and run the docker build command to create the image for my Flask app.
+
+Start the Docker Container:
+I’ll run the container in detached mode and make sure to map the app's ports (usually 80) to the host so it’s accessible externally.
+
+Set Up EC2 Security Group:
+I’ll go to the EC2 console, find the security group for my instance, and add an inbound rule to allow traffic on port 80 (or whatever port I’m using).
+
+Check the Flask App:
+Once the container’s running, I’ll open up a browser and test the public IP of my EC2 instance to make sure the Flask app is working.
+
+Set Up Auto-Restart for the Container (Optional):
+If I want my app to come back up automatically after a reboot, I’ll configure the container to restart when the EC2 instance does.
+
+Reverse Proxy with Nginx (Optional for Production):
+If it’s a production setup, I’ll install Nginx on EC2, configure it to forward traffic to the Flask app container, and make sure everything’s secure and optimized.
+
+Monitor & Troubleshoot:
+I’ll check the container logs and inspect the running containers to troubleshoot any issues and make sure everything is running smoothly.
+

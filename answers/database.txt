@@ -1,0 +1,35 @@
+Weather Data Table:
+    This table stores daily weather records for different weather stations. 
+    Each entry includes a station ID, date, maximum temperature, minimum temperature, and precipitation levels.
+
+    To prevent duplicate records for the same station on the same day, a UNIQUE constraint is applied to the (station_id, date) combination. 
+    If data is missing, it can either be left as NULL or replaced with a placeholder value (like -9999 for missing temperature readings).
+
+Weather Statistics Table:
+    Instead of calculating yearly weather stats every time a query runs, this table pre computes and stores yearly summaries for each station. 
+    This makes queries more efficient and reduces unnecessary recalculations.
+
+    It contains key statistical values like average max temperature, average min temperature, and total precipitation for a given year. 
+    To ensure each station has only one summary per year, a UNIQUE constraint is set on (station_id, year).
+
+
+Query Used To Create Tables:
+CREATE TABLE weather_data (
+    id SERIAL PRIMARY KEY,  -- Auto-incrementing unique identifier for each record
+    station_id VARCHAR(50) NOT NULL,  -- Identifier for the weather station
+    date DATE NOT NULL,  -- The recorded date for weather data
+    max_temp INT,  -- Recorded maximum temperature (tenths of a degree Celsius)
+    min_temp INT,  -- Recorded minimum temperature (tenths of a degree Celsius)
+    precipitation INT,  -- Total precipitation recorded (tenths of a millimeter)
+    UNIQUE(station_id, date)  -- Ensures no duplicate records for the same station and date
+);
+
+CREATE TABLE weather_stats (
+    id SERIAL PRIMARY KEY,  -- Unique ID for each yearly summary record
+    station_id VARCHAR(50) NOT NULL,  -- Weather station associated with the summary
+    year INT NOT NULL,  -- The year for which statistics are computed
+    avg_max_temp FLOAT,  -- Mean of maximum daily temperatures (Celsius)
+    avg_min_temp FLOAT,  -- Mean of minimum daily temperatures (Celsius)
+    total_precipitation FLOAT,  -- Sum of all precipitation over the year (centimeters)
+    UNIQUE(station_id, year)  -- Ensures one summary per station per year
+);
